@@ -9,7 +9,7 @@ Problem 1
 ================
 Model selection and regularization: green buildlings
 ----------------
-```{r part1, include=FALSE}
+```{r setup, include=FALSE}
 library(caret)
 library(gamlr)
 greenbuildings <- read.csv("https://raw.githubusercontent.com/jgscott/ECO395M/master/data/greenbuildings.csv")
@@ -40,6 +40,9 @@ empl_gr_Check <- greenbuildings %>%
 
 empl_gr_Check
 
+```
+
+```{r picture1, echo=FALSE}
 empl_gr_Check %>% 
   mutate(rowname = factor(rowname, levels = rowname[order(empl_gr)])) %>%  # Order by correlation strength
   ggplot(aes(x = rowname, y = empl_gr)) +
@@ -47,7 +50,9 @@ empl_gr_Check %>%
   ylab("Correlation with empl_gr") +
   xlab("Variable") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
 
+```{r impute, include=FALSE}
 # Imputation of missing data for emp_gl using MICE
 # Assumption: missing data is MAR and therefore all values that are missing can be explained by the data we already have
 # Statistical reasoning: Deleting NA data or simply replacing with the mean or mode can bias our model
@@ -57,10 +62,14 @@ md.pattern(greenbuildings)
 mice_imputes = mice(greenbuildings, m=5, maxit = 50, seed = 100)
 mice_imputes$method
 mice_imputes
+```
 
+```{r densityplot, echo=FALSE}
 # Red line is imputed data, blue line is original; due to similarity, we can assume that the missing values were MAR
 densityplot(mice_imputes)
+```
 
+```{r impute2, include=FALSE}
 # Choose final model
 gb_impute = complete(mice_imputes,5)
 gb_impute
