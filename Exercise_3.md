@@ -152,6 +152,7 @@ Analysis of Variance Table
 Compared to the full model, all models findings are statistically significant down to the 1% level. We also find that the gb_lm_step model results not only in the lowest AIC, but also the lowest RSS and therefore is the optimal model.
 
 Best performing model: gb_lm_step
+
 AIC = 34662.54
 
 We also tried a KNN model to determine if there was possible improvement.
@@ -213,6 +214,10 @@ green_rating green_rating:class_a
 4.696e+00 - 2.935e+00 
 ```
 For class_a buildings, the effect of having a green_rating on Rent is +$1.761/sqft per calander year compared to class_c buildings, holding all else fixed.
+
+![image](https://user-images.githubusercontent.com/47119252/55697268-41722480-5986-11e9-90b9-ad62b634617c.png)
+
+Overall, we found several interesting relationships. First, the best model to predict price is a linear step model. This provided us with the lowest AIC. Second, on average, buildlings with green certification charge a premium of $2.21/sqft. Third, the lowest quality buildings (Class C) charged the highest green certification premium at about $4.70/sqft while the highest quality buildings (Class A) charged the lowest premium at about $1.76/sqft more. A possible explanation for this result would be that high quality buildings have other features that boost prices, so green certification is "washed out" among those features. On the contrary, lower quality buildings have fewer features which allow green certification to stand out and command a larger price premium.
 
 Problem 2
 =========
