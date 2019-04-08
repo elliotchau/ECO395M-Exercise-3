@@ -9,6 +9,86 @@ Problem 1
 Model selection and regularization: green buildlings
 ----------------------------------------------------
 
+Before buildling the best predictive model, we noticed that there were missing observations in the data set. We elected to analyze possible corrections before proceeding with the model buildling process. Below is a table of basic summary statistics of the greenbuildlings data.
+  
+
+
+|   variable    | missing | complete |  n   |   mean    |    sd     |  p0  |   p25    |  p50   |   p75    |  p100   |   hist   |
+|---------------|---------|----------|------|-----------|-----------|------|----------|--------|----------|---------|----------|
+|      age      |    0    |   7894   | 7894 |   47.24   |   32.19   |  0   |    23    |   34   |    79    |   187   | ▆▇▂▃▂▁▁▁ |
+|   amenities   |    0    |   7894   | 7894 |   0.53    |    0.5    |  0   |    0     |   1    |    1     |    1    | ▇▁▁▁▁▁▁▇ |
+|  cd_total_07  |    0    |   7894   | 7894 |  1229.35  |  1104.59  |  39  |   684    |  966   |   1620   |  5240   | ▇▆▂▁▂▁▁▁ |
+|    class_a    |    0    |   7894   | 7894 |    0.4    |   0.49    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▅ |
+|    class_b    |    0    |   7894   | 7894 |   0.46    |    0.5    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▇ |
+|    cluster    |    0    |   7894   | 7894 |  588.62   |  399.91   |  1   |   272    |  476   |   1044   |  1230   | ▅▇▇▇▁▁▆▇ |
+| CS_PropertyID |    0    |   7894   | 7894 | 453002.52 | 743405.31 |  1   |  157452  | 313253 | 441188.5 | 6208103 | ▇▁▁▁▁▁▁▁ |
+|  Energystar   |    0    |   7894   | 7894 |   0.081   |   0.27    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+| green_rating  |    0    |   7894   | 7894 |   0.087   |   0.28    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|  hd_total07   |    0    |   7894   | 7894 |  3432.04  |  1976.94  |  0   |   1419   |  2739  |   4796   |  7200   | ▁▇▂▃▂▃▅▂ |
+|     LEED      |    0    |   7894   | 7894 |  0.0068   |   0.082   |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|      net      |    0    |   7894   | 7894 |   0.035   |   0.18    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|   renovated   |    0    |   7894   | 7894 |   0.38    |   0.49    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▅ |
+|     size      |    0    |   7894   | 7894 | 234637.74 |   3e+05   | 1624 | 50891.25 | 128838 |  294212  | 3781045 | ▇▁▁▁▁▁▁▁ |
+|    stories    |    0    |   7894   | 7894 |   13.58   |   12.29   |  1   |    4     |   10   |    19    |   110   | ▇▂▁▁▁▁▁▁ |
+|  total_dd_07  |    0    |   7894   | 7894 |  4661.4   |  1984.33  | 2103 |   2869   |  4979  |   6413   |  8244   | ▇▁▁▃▂▂▃▁ |
+
+
+|     variable      | missing | complete |  n   | mean  |   sd   |   p0   |  p25  |  p50  |  p75  | p100  |   hist   |
+|-------------------|---------|----------|------|-------|--------|--------|-------|-------|-------|-------|----------|
+|   cluster_rent    |    0    |   7894   | 7894 | 27.5  |  10.6  |   9    |  20   | 25.14 |  34   | 71.44 | ▂▇▅▅▂▁▁▁ |
+| Electricity_Costs |    0    |   7894   | 7894 | 0.031 | 0.0085 | 0.018  | 0.023 | 0.033 | 0.038 | 0.063 | ▆▃▂▇▁▁▁▁ |
+|      empl_gr      |   74    |   7820   | 7894 | 3.21  |  8.16  | -24.95 | 1.74  | 1.97  | 2.38  | 67.78 | ▁▁▇▁▁▁▁▁ |
+|     Gas_Costs     |    0    |   7894   | 7894 | 0.011 | 0.0024 | 0.0095 | 0.01  | 0.01  | 0.012 | 0.029 | ▇▂▁▁▁▁▁▁ |
+|   leasing_rate    |    0    |   7894   | 7894 | 82.61 | 21.38  |   0    | 77.85 | 89.53 | 96.44 |  100  | ▁▁▁▁▁▁▃▇ |
+|   Precipitation   |    0    |   7894   | 7894 | 31.08 | 11.58  | 10.46  | 22.71 | 23.16 | 43.89 | 58.02 | ▁▁▇▁▁▃▂▁ |
+|       Rent        |    0    |   7894   | 7894 | 28.42 | 15.08  |  2.98  | 19.5  | 25.16 | 34.18 |  250  | ▇▂▁▁▁▁▁▁ |
+
+
+Because empl_gr (employer growth) had 74 missing observations, we then decided to take a look at which variables were positively or negatively correlated with empl_gr.
+
+![image](https://user-images.githubusercontent.com/47119252/55695009-40d49080-597c-11e9-934e-da8d708fe3c0.png)
+
+We then impute the missing data. We assume that the missing data is missing-at-random (MAR), and therefore all values that are missing can be explained by the data we already have. Deleting NA data or simply replacing them with the mean or mode can bias our model. It is unlikely that the missing values are random, and it is correlated with other variables of interest; therefore, we can predict the missing values.
+
+![image](https://user-images.githubusercontent.com/47119252/55695148-da9c3d80-597c-11e9-99b9-f6d286aad6c9.png)
+
+The red line is imputed data, and the blue line is the original; due to similarity, we can assume that the missing values were MAR.
+
+Below is are the summary statistics for the corrected data set.
+
+|   variable    | missing | complete |  n   |   mean    |    sd     |  p0  |   p25    |  p50   |   p75    |  p100   |   hist   |
+|---------------|---------|----------|------|-----------|-----------|------|----------|--------|----------|---------|----------|
+|      age      |    0    |   7894   | 7894 |   47.24   |   32.19   |  0   |    23    |   34   |    79    |   187   | ▆▇▂▃▂▁▁▁ |
+|   amenities   |    0    |   7894   | 7894 |   0.53    |    0.5    |  0   |    0     |   1    |    1     |    1    | ▇▁▁▁▁▁▁▇ |
+|  cd_total_07  |    0    |   7894   | 7894 |  1229.35  |  1104.59  |  39  |   684    |  966   |   1620   |  5240   | ▇▆▂▁▂▁▁▁ |
+|    class_a    |    0    |   7894   | 7894 |    0.4    |   0.49    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▅ |
+|    class_b    |    0    |   7894   | 7894 |   0.46    |    0.5    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▇ |
+|    cluster    |    0    |   7894   | 7894 |  588.62   |  399.91   |  1   |   272    |  476   |   1044   |  1230   | ▅▇▇▇▁▁▆▇ |
+| CS_PropertyID |    0    |   7894   | 7894 | 453002.52 | 743405.31 |  1   |  157452  | 313253 | 441188.5 | 6208103 | ▇▁▁▁▁▁▁▁ |
+|  Energystar   |    0    |   7894   | 7894 |   0.081   |   0.27    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+| green_rating  |    0    |   7894   | 7894 |   0.087   |   0.28    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|  hd_total07   |    0    |   7894   | 7894 |  3432.04  |  1976.94  |  0   |   1419   |  2739  |   4796   |  7200   | ▁▇▂▃▂▃▅▂ |
+|     LEED      |    0    |   7894   | 7894 |  0.0068   |   0.082   |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|      net      |    0    |   7894   | 7894 |   0.035   |   0.18    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|   renovated   |    0    |   7894   | 7894 |   0.38    |   0.49    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▅ |
+|     size      |    0    |   7894   | 7894 | 234637.74 |   3e+05   | 1624 | 50891.25 | 128838 |  294212  | 3781045 | ▇▁▁▁▁▁▁▁ |
+|    stories    |    0    |   7894   | 7894 |   13.58   |   12.29   |  1   |    4     |   10   |    19    |   110   | ▇▂▁▁▁▁▁▁ |
+|  total_dd_07  |    0    |   7894   | 7894 |  4661.4   |  1984.33  | 2103 |   2869   |  4979  |   6413   |  8244   | ▇▁▁▃▂▂▃▁ |
+
+Variable type: numeric
+
+|     variable      | missing | complete |  n   | mean  |   sd   |   p0   |  p25  |  p50  |  p75  | p100  |   hist   |
+|-------------------|---------|----------|------|-------|--------|--------|-------|-------|-------|-------|----------|
+|   cluster_rent    |    0    |   7894   | 7894 | 27.5  |  10.6  |   9    |  20   | 25.14 |  34   | 71.44 | ▂▇▅▅▂▁▁▁ |
+| Electricity_Costs |    0    |   7894   | 7894 | 0.031 | 0.0085 | 0.018  | 0.023 | 0.033 | 0.038 | 0.063 | ▆▃▂▇▁▁▁▁ |
+|      empl_gr      |    0    |   7894   | 7894 |  3.2  |  8.13  | -24.95 | 1.74  | 1.97  | 2.44  | 67.78 | ▁▁▇▁▁▁▁▁ |
+|     Gas_Costs     |    0    |   7894   | 7894 | 0.011 | 0.0024 | 0.0095 | 0.01  | 0.01  | 0.012 | 0.029 | ▇▂▁▁▁▁▁▁ |
+|   leasing_rate    |    0    |   7894   | 7894 | 82.61 | 21.38  |   0    | 77.85 | 89.53 | 96.44 |  100  | ▁▁▁▁▁▁▃▇ |
+|   Precipitation   |    0    |   7894   | 7894 | 31.08 | 11.58  | 10.46  | 22.71 | 23.16 | 43.89 | 58.02 | ▁▁▇▁▁▃▂▁ |
+|       Rent        |    0    |   7894   | 7894 | 28.42 | 15.08  |  2.98  | 19.5  | 25.16 | 34.18 |  250  | ▇▂▁▁▁▁▁▁ |
+> 
+
+
 Problem 2
 =========
 
