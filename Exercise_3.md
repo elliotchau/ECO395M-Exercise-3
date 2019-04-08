@@ -6,12 +6,12 @@ By Hana Krijestorac, David Garrett, and Elliot Chau
 Problem 1
 =========
 
-Model selection and regularization: green buildlings
+Model selection and regularization: green buildings
 ----------------------------------------------------
 
 **Building the best predictive model**
 
-Before buildling the best predictive model, we noticed that there were missing observations in the data set. We elected to analyze possible corrections before proceeding with the model buildling process. Below is a table of basic summary statistics of the greenbuildlings data.
+Before building the best predictive model, we noticed that there were missing observations in the data set. We elected to analyze possible corrections before proceeding with the model building process. Below is a table of basic summary statistics of the green buildings data.
   
 
 
@@ -201,7 +201,7 @@ green_rating
 ```
 For class_c buildings, the effect of having a green_rating on Rent is +$4.696/sqft, holding all else fixed.
 
-Effect of green rating for class_b buildlings:
+Effect of green rating for class_b buildings:
 ```
 green_rating green_rating:class_b
 4.696e+00 - 2.485e+00
@@ -216,8 +216,10 @@ green_rating green_rating:class_a
 For class_a buildings, the effect of having a green_rating on Rent is +$1.761/sqft per calander year compared to class_c buildings, holding all else fixed.
 
 ![image](https://user-images.githubusercontent.com/47119252/55697268-41722480-5986-11e9-90b9-ad62b634617c.png)
+![image](https://user-images.githubusercontent.com/47119252/55697296-66669780-5986-11e9-8f55-a2e517b51e9e.png)
 
-Overall, we found several interesting relationships. First, the best model to predict price is a linear step model. This provided us with the lowest AIC. Second, on average, buildlings with green certification charge a premium of $2.21/sqft. Third, the lowest quality buildings (Class C) charged the highest green certification premium at about $4.70/sqft while the highest quality buildings (Class A) charged the lowest premium at about $1.76/sqft more. A possible explanation for this result would be that high quality buildings have other features that boost prices, so green certification is "washed out" among those features. On the contrary, lower quality buildings have fewer features which allow green certification to stand out and command a larger price premium.
+
+Overall, we found several interesting relationships. First, the best model to predict price is a linear step model. This provided us with the lowest AIC. Second, on average, buildings with green certification do charge a premium of $2.21/sqft. Third, the lowest quality buildings (Class C) charged the highest green certification premium at about $4.70/sqft while the highest quality buildings (Class A) charged the lowest premium at about $1.76/sqft more. A possible explanation for this result would be that high quality buildings have other features that boost prices, so green certification is "washed out" among those features. On the contrary, lower quality buildings have fewer features which allow green certification to stand out and command a larger price premium.
 
 Problem 2
 =========
