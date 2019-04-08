@@ -1,5 +1,5 @@
 library(caret)
-greenbuildings <- read.csv("https://raw.githubusercontent.com/jgscott/ECO395M/master/data/greenbuildings.csv")
+
 str(greenbuildings)
 
 gbPrice = greenbuildings
@@ -17,7 +17,7 @@ prop.table(table(is.na(greenbuildings)))
 colMeans(is.na(greenbuildings))
 # .937% or the empl_gr data is missing from the dataset
 
-#Check Correlation of empl_gr with other variables to see if it is MAR (missing at random) or MNAR
+#Check Correlation of empl_gr with other variables to see if it is MAR or MNAR
 library(corrr)
 library(ggplot2)
 library(dplyr)
@@ -80,8 +80,7 @@ rent_Check %>%
   xlab("Variable") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# Missing data is now imputed
-######### Model building time ######### 
+#########
 # Number of cores
 library(foreach)
 library(doMC)
@@ -237,7 +236,7 @@ coef(gb_lm_step)
 
 # Part 3
 # Re-run optimal model and include an interaction for class_a and class_b buildings with green_rating
-lm(formula = Rent ~ class_a:green_rating + class_b:green_rating + cluster_rent + age + Electricity_Costs + 
+gbGR_lm_model = lm(formula = Rent ~ class_a:green_rating + class_b:green_rating + cluster_rent + age + Electricity_Costs + 
     size + stories + class_a + amenities + CS_PropertyID + class_b + 
     hd_total07 + net + Gas_Costs + cluster + empl_gr + Precipitation + 
     green_rating + cd_total_07 + LEED + leasing_rate + cluster_rent:size + 
@@ -259,6 +258,8 @@ lm(formula = Rent ~ class_a:green_rating + class_b:green_rating + cluster_rent +
     Electricity_Costs:amenities + stories:cd_total_07 + class_a:empl_gr + 
     Gas_Costs:cluster + cluster:cd_total_07, data = gb_impute)
 
+gbGR_lm_model
+
 # Effect of green rating for class_c buildings
 4.696e+00
 # For class_c buildings, the effect of having a green_rating on Rent is +4.696 dollars per square foot, holding all else fixed
@@ -276,15 +277,15 @@ library(ggplot2)
 library(sjPlot)
 library(snakecase)
 library(cowplot)
-RentPredPlot1 <- plot_model(gb_lm_step, type = "pred", terms =c("green_rating")) +
+RentPredPlot1 <- plot_model(gbGR_lm_model, type = "pred", terms =c("green_rating")) +
   ggtitle("Predicted Effect on Rent for \nclass_c buildings with green_rating") +
   theme(legend.position = c(0, .8), legend.justification = c(0, .5))
-RentPredPlot2 <- plot_model(gb_lm_step, type = "pred", terms = c("class_b", "green_rating")) +
+RentPredPlot2 <- plot_model(gbGR_lm_model, type = "pred", terms = c("class_b", "green_rating")) +
   ggtitle("Predicted Effect on Rent for \nclass_b buildings with green_rating") +
   scale_colour_discrete(guide = guide_legend(title = "green_rating")) + 
   scale_fill_discrete(guide = guide_legend(title = "green_rating")) +
   theme(legend.position = c(0, .8), legend.justification = c(0, .5))
-RentPredPlot3 <- plot_model(gb_lm_step, type = "pred", terms = c("class_a", "green_rating")) +
+RentPredPlot3 <- plot_model(gbGR_lm_model, type = "pred", terms = c("class_a", "green_rating")) +
   ggtitle("Predicted Effect on Rent for \nclass_a buildings with green_rating") +
   scale_colour_discrete(guide = guide_legend(title = "green_rating")) + 
   scale_fill_discrete(guide = guide_legend(title = "green_rating")) +
@@ -294,6 +295,8 @@ library(gridExtra)
 RentPredPlot1
 plot_grid(RentPredPlot2, RentPredPlot3, align = "v", ncol=2, axis = 'l')
 
+# Interactions between class_a and class_b buildings and green ratings have very large confidence intervals and therefore are likely to be a weak/statistically insignificant estimator 
+# This is likely why it was not included in the optimal model using the step function
 
 
 
