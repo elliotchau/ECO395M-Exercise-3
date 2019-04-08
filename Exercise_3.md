@@ -92,7 +92,8 @@ Proceeding with development of the best model, we try various methods.
 
 The following is the LASSO model.
 
-**ADD PICTURE**
+![image](https://user-images.githubusercontent.com/47119252/55700837-77b7a000-5996-11e9-8c78-23a8222bd812.png)
+
 
 Analysis of Variance Table
   
