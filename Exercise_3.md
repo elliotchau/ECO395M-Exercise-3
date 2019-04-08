@@ -157,7 +157,7 @@ AIC = 34662.54
 
 We also tried a KNN model to determine if there was possible improvement.
 ![image](https://user-images.githubusercontent.com/47119252/55696400-695f8900-5982-11e9-9129-53ad4257d1c4.png)
-
+Unfortunately, the RMSE for this method is higher than gb_lm_step.
 
 **Using the model to quantify the average change in rental income per square foot associated with green certification, holding other features of the building constant**
 
