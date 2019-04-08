@@ -52,9 +52,9 @@ We then impute the missing data. We assume that the missing data is missing-at-r
 
 ![image](https://user-images.githubusercontent.com/47119252/55695148-da9c3d80-597c-11e9-99b9-f6d286aad6c9.png)
 
-The red line is imputed data, and the blue line is the original; due to similarity, we can assume that the missing values were MAR.
+The red line is imputed data, and the blue line is the original. Due to the similarity, we can assume that the missing values were MAR.
 
-Below is are the summary statistics for the corrected data set.
+Below is a table of summary statistics for the corrected data set.
 
 |   variable    | missing | complete |  n   |   mean    |    sd     |  p0  |   p25    |  p50   |   p75    |  p100   |   hist   |
 |---------------|---------|----------|------|-----------|-----------|------|----------|--------|----------|---------|----------|
@@ -75,8 +75,6 @@ Below is are the summary statistics for the corrected data set.
 |    stories    |    0    |   7894   | 7894 |   13.58   |   12.29   |  1   |    4     |   10   |    19    |   110   | ▇▂▁▁▁▁▁▁ |
 |  total_dd_07  |    0    |   7894   | 7894 |  4661.4   |  1984.33  | 2103 |   2869   |  4979  |   6413   |  8244   | ▇▁▁▃▂▂▃▁ |
 
-Variable type: numeric
-
 |     variable      | missing | complete |  n   | mean  |   sd   |   p0   |  p25  |  p50  |  p75  | p100  |   hist   |
 |-------------------|---------|----------|------|-------|--------|--------|-------|-------|-------|-------|----------|
 |   cluster_rent    |    0    |   7894   | 7894 | 27.5  |  10.6  |   9    |  20   | 25.14 |  34   | 71.44 | ▂▇▅▅▂▁▁▁ |
@@ -88,6 +86,70 @@ Variable type: numeric
 |       Rent        |    0    |   7894   | 7894 | 28.42 | 15.08  |  2.98  | 19.5  | 25.16 | 34.18 |  250  | ▇▂▁▁▁▁▁▁ |
 > 
 
+Proceeding with development of the best model, we try various methods.
+
+The following is the LASSO model.
+
+
+
+Analysis of Variance Table
+  
+ gb_lm_full
+ > Model 1: Rent ~ cluster_rent + age + Electricity_Costs + size + stories + 
+ >   class_a + amenities + CS_PropertyID + class_b + hd_total07 + 
+ >   net + Gas_Costs + cluster + empl_gr + Precipitation + green_rating + 
+ >   cd_total_07 + hd_total07 + total_dd_07 + LEED + Energystar + 
+ >   leasing_rate
+    
+ gb_lm_forward  
+ > Model 2: Rent ~ cluster_rent + size + class_a + class_b + cd_total_07 + 
+ >   age + cluster + net + Electricity_Costs + leasing_rate + 
+ >   hd_total07 + LEED + amenities + cluster_rent:size + size:cluster + 
+ >   cluster_rent:cluster + class_b:age + class_a:age + cd_total_07:Electricity_Costs + 
+ >   size:leasing_rate + cd_total_07:net + class_b:Electricity_Costs + 
+ >   cd_total_07:hd_total07 + cluster_rent:age + cluster_rent:net + 
+ >   cluster_rent:leasing_rate + cluster_rent:LEED + cluster:leasing_rate + 
+ >   size:cd_total_07 + class_b:amenities + size:Electricity_Costs + 
+ >   class_a:Electricity_Costs + cluster:Electricity_Costs + cluster:hd_total07 + 
+ >   size:class_a + size:class_b + size:amenities + size:age + 
+ >   class_b:cd_total_07 + Electricity_Costs:amenities + cluster_rent:amenities + 
+ >   class_b:hd_total07 + class_a:hd_total07 + size:hd_total07 + 
+ >   cluster_rent:Electricity_Costs + age:Electricity_Costs + 
+ >   Electricity_Costs:hd_total07 + net:Electricity_Costs + net:hd_total07 + 
+ >   age:LEED
+  
+ gb_lm_step
+ > Model 3: Rent ~ cluster_rent + age + Electricity_Costs + size + stories + 
+ >   class_a + amenities + CS_PropertyID + class_b + hd_total07 + 
+ >   net + Gas_Costs + cluster + empl_gr + Precipitation + green_rating + 
+ >   cd_total_07 + LEED + leasing_rate + cluster_rent:size + size:cluster + 
+ >   cluster_rent:cluster + size:Precipitation + cluster_rent:stories + 
+ >   size:leasing_rate + net:cd_total_07 + age:class_b + stories:class_a + 
+ >   age:class_a + hd_total07:Precipitation + amenities:green_rating + 
+ >   cluster_rent:LEED + cluster_rent:leasing_rate + class_b:Gas_Costs + 
+ >   stories:amenities + Gas_Costs:Precipitation + size:cd_total_07 + 
+ >   amenities:class_b + size:CS_PropertyID + cluster:leasing_rate + 
+ >   class_b:Precipitation + Electricity_Costs:class_b + CS_PropertyID:class_b + 
+ >   CS_PropertyID:hd_total07 + Electricity_Costs:CS_PropertyID + 
+ >   CS_PropertyID:empl_gr + cluster_rent:amenities + amenities:CS_PropertyID + 
+ >   cluster_rent:age + age:Electricity_Costs + cluster_rent:cd_total_07 + 
+ >   Electricity_Costs:cluster + hd_total07:cluster + class_a:Precipitation + 
+ >   class_a:Gas_Costs + Electricity_Costs:class_a + class_a:CS_PropertyID + 
+ >   age:CS_PropertyID + Electricity_Costs:amenities + class_b:empl_gr + 
+ >   CS_PropertyID:Gas_Costs + hd_total07:cd_total_07 + stories:cluster + 
+ >   cluster_rent:net + LEED:leasing_rate + Gas_Costs:cluster + 
+ >   cluster:cd_total_07 + amenities:Gas_Costs + amenities:Precipitation + 
+ >   stories:cd_total_07
+    
+ >  Res.Df    RSS Df Sum of Sq       F    Pr(>F)    
+ > 1   7873 695267                                   
+ > 2   7843 637567 30     57700 24.0411 < 2.2e-16 ***
+ > 3   7823 625851 20     11716  7.3226 < 2.2e-16 ***
+
+Compared to the full model, all models findings are statistically significant down to the 1% level. We also find that the gb_lm_step model results not only in the lowest AIC, but also the lowest RSS and therefore is the optimal model.
+
+Best performing model: gb_lm_step
+AIC = 34662.54
 
 Problem 2
 =========
