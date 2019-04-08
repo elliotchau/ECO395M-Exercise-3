@@ -1,5 +1,5 @@
 library(caret)
-
+greenbuildings <- read.csv("https://raw.githubusercontent.com/jgscott/ECO395M/master/data/greenbuildings.csv")
 str(greenbuildings)
 
 gbPrice = greenbuildings
@@ -86,7 +86,7 @@ library(foreach)
 library(doMC)
 
 # Register Cores
-registerDoMC(4)
+registerDoMC(2)
 #########
 
 # Forward Selection Model
@@ -178,13 +178,13 @@ sum(gbb.1se!=0)
 
 # Comparing AICc and CV error
 plot(gb_cvl, bty="n")
-lines(log(gb_lasso$lambda),AICc(gb_lasso)/n, col="green", lwd=2)
+lines(log(gb_lasso$lambda), (AICc(gb_lasso)/n), col="green", lwd=2)
 legend("top", fill=c("blue","green"),
        legend=c("CV","AICc"), bty="n")
 #######
 
 # Anova for model comparison
-anova(full, gb_lm_forward, gb_lm_medium, gb_lm_step)
+anova(gb_lm_full, gb_lm_forward, gb_lm_step)
 
 # Compared to the full model, all models findings are statistically significant at any level of significance
 # We also find that the gb_lm_step model results not only in the lowest AIC, but also the lowest RSS and therefore is the optimal model 
@@ -214,7 +214,7 @@ set.seed(200)
 ctrl <- trainControl(method="repeatedcv", repeats = 5)
 knnFit <- train(Rent ~., data = trainSet, method = "knn", trControl = ctrl, preProcess = c("center", "scale"), tuneLength = 20)
 
-# knnFit outpit
+# knnFit output
 knnFit
 
 # Plotting knnFit results
