@@ -157,7 +157,7 @@ AIC = 34662.54
 
 We also tried a KNN model to determine if there was possible improvement.
 ![image](https://user-images.githubusercontent.com/47119252/55696400-695f8900-5982-11e9-9129-53ad4257d1c4.png)
-
+Unfortunately, the RMSE for this method is higher than gb_lm_step.
 
 **Using the model to quantify the average change in rental income per square foot associated with green certification, holding other features of the building constant**
 
@@ -219,7 +219,7 @@ For class_a buildings, the effect of having a green_rating on Rent is +$1.761/sq
 ![image](https://user-images.githubusercontent.com/47119252/55697296-66669780-5986-11e9-8f55-a2e517b51e9e.png)
 
 
-Overall, we found several interesting relationships. First, the best model to predict price is a linear step model. This provided us with the lowest AIC. Second, on average, buildings with green certification do charge a premium of $2.21/sqft. Third, the lowest quality buildings (Class C) charged the highest green certification premium at about $4.70/sqft while the highest quality buildings (Class A) charged the lowest premium at about $1.76/sqft more. A possible explanation for this result would be that high quality buildings have other features that boost prices, so green certification is "washed out" among those features. On the contrary, lower quality buildings have fewer features which allow green certification to stand out and command a larger price premium.
+Overall, we found several interesting relationships. First, the best model to predict price is a linear step model. This provided us with the lowest AIC. Second, on average, buildings with green certification do charge a premium at $2.21/sqft. Third, the lowest quality buildings (Class C) charged the highest green certification premium at about $4.70/sqft while the highest quality buildings (Class A) charged the lowest premium at about $1.76/sqft more. A possible explanation for this result would be that high quality buildings have other features that boost prices, so green certification is "washed out" among those features. On the contrary, lower quality buildings have fewer features which allow green certification to stand out and command a larger price premium.
 
 Problem 2
 =========
