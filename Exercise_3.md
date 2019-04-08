@@ -6,8 +6,220 @@ By Hana Krijestorac, David Garrett, and Elliot Chau
 Problem 1
 =========
 
-Model selection and regularization: green buildlings
+Model selection and regularization: green buildings
 ----------------------------------------------------
+
+**Building the best predictive model**
+
+Before building the best predictive model, we noticed that there were missing observations in the data set. We elected to analyze possible corrections before proceeding with the model building process. Below is a table of basic summary statistics of the green buildings data.
+  
+
+
+|   variable    | missing | complete |  n   |   mean    |    sd     |  p0  |   p25    |  p50   |   p75    |  p100   |   hist   |
+|---------------|---------|----------|------|-----------|-----------|------|----------|--------|----------|---------|----------|
+|      age      |    0    |   7894   | 7894 |   47.24   |   32.19   |  0   |    23    |   34   |    79    |   187   | ▆▇▂▃▂▁▁▁ |
+|   amenities   |    0    |   7894   | 7894 |   0.53    |    0.5    |  0   |    0     |   1    |    1     |    1    | ▇▁▁▁▁▁▁▇ |
+|  cd_total_07  |    0    |   7894   | 7894 |  1229.35  |  1104.59  |  39  |   684    |  966   |   1620   |  5240   | ▇▆▂▁▂▁▁▁ |
+|    class_a    |    0    |   7894   | 7894 |    0.4    |   0.49    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▅ |
+|    class_b    |    0    |   7894   | 7894 |   0.46    |    0.5    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▇ |
+|    cluster    |    0    |   7894   | 7894 |  588.62   |  399.91   |  1   |   272    |  476   |   1044   |  1230   | ▅▇▇▇▁▁▆▇ |
+| CS_PropertyID |    0    |   7894   | 7894 | 453002.52 | 743405.31 |  1   |  157452  | 313253 | 441188.5 | 6208103 | ▇▁▁▁▁▁▁▁ |
+|  Energystar   |    0    |   7894   | 7894 |   0.081   |   0.27    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+| green_rating  |    0    |   7894   | 7894 |   0.087   |   0.28    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|  hd_total07   |    0    |   7894   | 7894 |  3432.04  |  1976.94  |  0   |   1419   |  2739  |   4796   |  7200   | ▁▇▂▃▂▃▅▂ |
+|     LEED      |    0    |   7894   | 7894 |  0.0068   |   0.082   |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|      net      |    0    |   7894   | 7894 |   0.035   |   0.18    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|   renovated   |    0    |   7894   | 7894 |   0.38    |   0.49    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▅ |
+|     size      |    0    |   7894   | 7894 | 234637.74 |   3e+05   | 1624 | 50891.25 | 128838 |  294212  | 3781045 | ▇▁▁▁▁▁▁▁ |
+|    stories    |    0    |   7894   | 7894 |   13.58   |   12.29   |  1   |    4     |   10   |    19    |   110   | ▇▂▁▁▁▁▁▁ |
+|  total_dd_07  |    0    |   7894   | 7894 |  4661.4   |  1984.33  | 2103 |   2869   |  4979  |   6413   |  8244   | ▇▁▁▃▂▂▃▁ |
+
+
+|     variable      | missing | complete |  n   | mean  |   sd   |   p0   |  p25  |  p50  |  p75  | p100  |   hist   |
+|-------------------|---------|----------|------|-------|--------|--------|-------|-------|-------|-------|----------|
+|   cluster_rent    |    0    |   7894   | 7894 | 27.5  |  10.6  |   9    |  20   | 25.14 |  34   | 71.44 | ▂▇▅▅▂▁▁▁ |
+| Electricity_Costs |    0    |   7894   | 7894 | 0.031 | 0.0085 | 0.018  | 0.023 | 0.033 | 0.038 | 0.063 | ▆▃▂▇▁▁▁▁ |
+|      empl_gr      |   74    |   7820   | 7894 | 3.21  |  8.16  | -24.95 | 1.74  | 1.97  | 2.38  | 67.78 | ▁▁▇▁▁▁▁▁ |
+|     Gas_Costs     |    0    |   7894   | 7894 | 0.011 | 0.0024 | 0.0095 | 0.01  | 0.01  | 0.012 | 0.029 | ▇▂▁▁▁▁▁▁ |
+|   leasing_rate    |    0    |   7894   | 7894 | 82.61 | 21.38  |   0    | 77.85 | 89.53 | 96.44 |  100  | ▁▁▁▁▁▁▃▇ |
+|   Precipitation   |    0    |   7894   | 7894 | 31.08 | 11.58  | 10.46  | 22.71 | 23.16 | 43.89 | 58.02 | ▁▁▇▁▁▃▂▁ |
+|       Rent        |    0    |   7894   | 7894 | 28.42 | 15.08  |  2.98  | 19.5  | 25.16 | 34.18 |  250  | ▇▂▁▁▁▁▁▁ |
+
+
+Because empl_gr (employer growth) had 74 missing observations, we then decided to take a look at which variables were positively or negatively correlated with empl_gr.
+
+![image](https://user-images.githubusercontent.com/47119252/55695009-40d49080-597c-11e9-934e-da8d708fe3c0.png)
+
+We then impute the missing data. We assume that the missing data is missing-at-random (MAR), and therefore all values that are missing can be explained by the data we already have. Deleting NA data or simply replacing them with the mean or mode can bias our model. It is unlikely that the missing values are random, and it is correlated with other variables of interest; therefore, we can predict the missing values.
+
+![image](https://user-images.githubusercontent.com/47119252/55695148-da9c3d80-597c-11e9-99b9-f6d286aad6c9.png)
+
+The red line is imputed data, and the blue line is the original. Due to the similarity, we can assume that the missing values were MAR.
+
+Below is a table of summary statistics for the corrected data set.
+
+|   variable    | missing | complete |  n   |   mean    |    sd     |  p0  |   p25    |  p50   |   p75    |  p100   |   hist   |
+|---------------|---------|----------|------|-----------|-----------|------|----------|--------|----------|---------|----------|
+|      age      |    0    |   7894   | 7894 |   47.24   |   32.19   |  0   |    23    |   34   |    79    |   187   | ▆▇▂▃▂▁▁▁ |
+|   amenities   |    0    |   7894   | 7894 |   0.53    |    0.5    |  0   |    0     |   1    |    1     |    1    | ▇▁▁▁▁▁▁▇ |
+|  cd_total_07  |    0    |   7894   | 7894 |  1229.35  |  1104.59  |  39  |   684    |  966   |   1620   |  5240   | ▇▆▂▁▂▁▁▁ |
+|    class_a    |    0    |   7894   | 7894 |    0.4    |   0.49    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▅ |
+|    class_b    |    0    |   7894   | 7894 |   0.46    |    0.5    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▇ |
+|    cluster    |    0    |   7894   | 7894 |  588.62   |  399.91   |  1   |   272    |  476   |   1044   |  1230   | ▅▇▇▇▁▁▆▇ |
+| CS_PropertyID |    0    |   7894   | 7894 | 453002.52 | 743405.31 |  1   |  157452  | 313253 | 441188.5 | 6208103 | ▇▁▁▁▁▁▁▁ |
+|  Energystar   |    0    |   7894   | 7894 |   0.081   |   0.27    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+| green_rating  |    0    |   7894   | 7894 |   0.087   |   0.28    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|  hd_total07   |    0    |   7894   | 7894 |  3432.04  |  1976.94  |  0   |   1419   |  2739  |   4796   |  7200   | ▁▇▂▃▂▃▅▂ |
+|     LEED      |    0    |   7894   | 7894 |  0.0068   |   0.082   |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|      net      |    0    |   7894   | 7894 |   0.035   |   0.18    |  0   |    0     |   0    |    0     |    1    | ▇▁▁▁▁▁▁▁ |
+|   renovated   |    0    |   7894   | 7894 |   0.38    |   0.49    |  0   |    0     |   0    |    1     |    1    | ▇▁▁▁▁▁▁▅ |
+|     size      |    0    |   7894   | 7894 | 234637.74 |   3e+05   | 1624 | 50891.25 | 128838 |  294212  | 3781045 | ▇▁▁▁▁▁▁▁ |
+|    stories    |    0    |   7894   | 7894 |   13.58   |   12.29   |  1   |    4     |   10   |    19    |   110   | ▇▂▁▁▁▁▁▁ |
+|  total_dd_07  |    0    |   7894   | 7894 |  4661.4   |  1984.33  | 2103 |   2869   |  4979  |   6413   |  8244   | ▇▁▁▃▂▂▃▁ |
+
+|     variable      | missing | complete |  n   | mean  |   sd   |   p0   |  p25  |  p50  |  p75  | p100  |   hist   |
+|-------------------|---------|----------|------|-------|--------|--------|-------|-------|-------|-------|----------|
+|   cluster_rent    |    0    |   7894   | 7894 | 27.5  |  10.6  |   9    |  20   | 25.14 |  34   | 71.44 | ▂▇▅▅▂▁▁▁ |
+| Electricity_Costs |    0    |   7894   | 7894 | 0.031 | 0.0085 | 0.018  | 0.023 | 0.033 | 0.038 | 0.063 | ▆▃▂▇▁▁▁▁ |
+|      empl_gr      |    0    |   7894   | 7894 |  3.2  |  8.13  | -24.95 | 1.74  | 1.97  | 2.44  | 67.78 | ▁▁▇▁▁▁▁▁ |
+|     Gas_Costs     |    0    |   7894   | 7894 | 0.011 | 0.0024 | 0.0095 | 0.01  | 0.01  | 0.012 | 0.029 | ▇▂▁▁▁▁▁▁ |
+|   leasing_rate    |    0    |   7894   | 7894 | 82.61 | 21.38  |   0    | 77.85 | 89.53 | 96.44 |  100  | ▁▁▁▁▁▁▃▇ |
+|   Precipitation   |    0    |   7894   | 7894 | 31.08 | 11.58  | 10.46  | 22.71 | 23.16 | 43.89 | 58.02 | ▁▁▇▁▁▃▂▁ |
+|       Rent        |    0    |   7894   | 7894 | 28.42 | 15.08  |  2.98  | 19.5  | 25.16 | 34.18 |  250  | ▇▂▁▁▁▁▁▁ |
+> 
+
+Proceeding with development of the best model, we try various methods.
+
+The following is the LASSO model.
+
+**ADD PICTURE**
+
+Analysis of Variance Table
+  
+ gb_lm_full
+ > Model 1: Rent ~ cluster_rent + age + Electricity_Costs + size + stories + 
+ >   class_a + amenities + CS_PropertyID + class_b + hd_total07 + 
+ >   net + Gas_Costs + cluster + empl_gr + Precipitation + green_rating + 
+ >   cd_total_07 + hd_total07 + total_dd_07 + LEED + Energystar + 
+ >   leasing_rate
+    
+ gb_lm_forward  
+ > Model 2: Rent ~ cluster_rent + size + class_a + class_b + cd_total_07 + 
+ >   age + cluster + net + Electricity_Costs + leasing_rate + 
+ >   hd_total07 + LEED + amenities + cluster_rent:size + size:cluster + 
+ >   cluster_rent:cluster + class_b:age + class_a:age + cd_total_07:Electricity_Costs + 
+ >   size:leasing_rate + cd_total_07:net + class_b:Electricity_Costs + 
+ >   cd_total_07:hd_total07 + cluster_rent:age + cluster_rent:net + 
+ >   cluster_rent:leasing_rate + cluster_rent:LEED + cluster:leasing_rate + 
+ >   size:cd_total_07 + class_b:amenities + size:Electricity_Costs + 
+ >   class_a:Electricity_Costs + cluster:Electricity_Costs + cluster:hd_total07 + 
+ >   size:class_a + size:class_b + size:amenities + size:age + 
+ >   class_b:cd_total_07 + Electricity_Costs:amenities + cluster_rent:amenities + 
+ >   class_b:hd_total07 + class_a:hd_total07 + size:hd_total07 + 
+ >   cluster_rent:Electricity_Costs + age:Electricity_Costs + 
+ >   Electricity_Costs:hd_total07 + net:Electricity_Costs + net:hd_total07 + 
+ >   age:LEED
+  
+ gb_lm_step
+ > Model 3: Rent ~ cluster_rent + age + Electricity_Costs + size + stories + 
+ >   class_a + amenities + CS_PropertyID + class_b + hd_total07 + 
+ >   net + Gas_Costs + cluster + empl_gr + Precipitation + green_rating + 
+ >   cd_total_07 + LEED + leasing_rate + cluster_rent:size + size:cluster + 
+ >   cluster_rent:cluster + size:Precipitation + cluster_rent:stories + 
+ >   size:leasing_rate + net:cd_total_07 + age:class_b + stories:class_a + 
+ >   age:class_a + hd_total07:Precipitation + amenities:green_rating + 
+ >   cluster_rent:LEED + cluster_rent:leasing_rate + class_b:Gas_Costs + 
+ >   stories:amenities + Gas_Costs:Precipitation + size:cd_total_07 + 
+ >   amenities:class_b + size:CS_PropertyID + cluster:leasing_rate + 
+ >   class_b:Precipitation + Electricity_Costs:class_b + CS_PropertyID:class_b + 
+ >   CS_PropertyID:hd_total07 + Electricity_Costs:CS_PropertyID + 
+ >   CS_PropertyID:empl_gr + cluster_rent:amenities + amenities:CS_PropertyID + 
+ >   cluster_rent:age + age:Electricity_Costs + cluster_rent:cd_total_07 + 
+ >   Electricity_Costs:cluster + hd_total07:cluster + class_a:Precipitation + 
+ >   class_a:Gas_Costs + Electricity_Costs:class_a + class_a:CS_PropertyID + 
+ >   age:CS_PropertyID + Electricity_Costs:amenities + class_b:empl_gr + 
+ >   CS_PropertyID:Gas_Costs + hd_total07:cd_total_07 + stories:cluster + 
+ >   cluster_rent:net + LEED:leasing_rate + Gas_Costs:cluster + 
+ >   cluster:cd_total_07 + amenities:Gas_Costs + amenities:Precipitation + 
+ >   stories:cd_total_07
+    
+ Res.Df   | RSS |Df| Sum of Sq |      F  |  Pr(>F)  
+ --------- |--|---|---------------|--|--------
+ 1|   7873 | 695267 |    |         |         |            
+ 2|   7843 | 637567 | 30 |   57700 | 24.0411 | < 2.2e-16 ***
+ 3|   7823 | 625851 | 20 |   11716 |  7.3226 | < 2.2e-16 ***
+
+Compared to the full model, all models findings are statistically significant down to the 1% level. We also find that the gb_lm_step model results not only in the lowest AIC, but also the lowest RSS and therefore is the optimal model.
+
+Best performing model: gb_lm_step
+
+AIC = 34662.54
+
+We also tried a KNN model to determine if there was possible improvement.
+![image](https://user-images.githubusercontent.com/47119252/55696400-695f8900-5982-11e9-9129-53ad4257d1c4.png)
+
+
+**Using the model to quantify the average change in rental income per square foot associated with green certification, holding other features of the building constant**
+
+```
+green_rating 
+2.010052e+00
+```
+
+On average, the effect of green certification on Rent for class_c buildings, holding all other features fixed, is +$2.01/sqft per calander year.
+
+**Assess whether the green certification effect is different for different buildings, or instead whether it seems to be roughly similar across all or most buildings**
+
+
+Re-run optimal model and include an interaction for class_a and class_b buildings with green rating.
+> gbGR_lm_model = lm(formula = Rent ~ class_a:green_rating + class_b:green_rating + cluster_rent + age + Electricity_Costs + 
+>    size + stories + class_a + amenities + CS_PropertyID + class_b + 
+>    hd_total07 + net + Gas_Costs + cluster + empl_gr + Precipitation + 
+>    green_rating + cd_total_07 + LEED + leasing_rate + cluster_rent:size + 
+>    size:cluster + cluster_rent:cluster + size:Precipitation + 
+>    cluster_rent:stories + size:leasing_rate + net:cd_total_07 + 
+>    stories:class_a + age:class_b + age:class_a + hd_total07:Precipitation + 
+>    cluster_rent:LEED + stories:amenities + amenities:class_b + 
+>    cluster_rent:leasing_rate + class_b:Precipitation + size:cd_total_07 + 
+>    Electricity_Costs:class_b + Gas_Costs:Precipitation + cluster_rent:amenities + 
+>    amenities:green_rating + CS_PropertyID:hd_total07 + Electricity_Costs:CS_PropertyID + 
+>    CS_PropertyID:class_b + cluster_rent:age + age:Electricity_Costs + 
+>    cluster:leasing_rate + hd_total07:cd_total_07 + Electricity_Costs:cluster + 
+>    hd_total07:cluster + cluster_rent:cd_total_07 + class_a:Precipitation + 
+>    size:CS_PropertyID + amenities:CS_PropertyID + Electricity_Costs:class_a + 
+>    CS_PropertyID:empl_gr + amenities:Gas_Costs + amenities:Precipitation + 
+>    age:cd_total_07 + class_b:empl_gr + cluster_rent:net + stories:cluster + 
+>    class_a:CS_PropertyID + age:CS_PropertyID + LEED:leasing_rate + 
+>    class_a:Gas_Costs + class_b:Gas_Costs + CS_PropertyID:Gas_Costs + 
+>    Electricity_Costs:amenities + stories:cd_total_07 + class_a:empl_gr + 
+>    Gas_Costs:cluster + cluster:cd_total_07, data = gb_impute)
+
+Effect of green rating for class_c buildings:
+```
+green_rating 
+4.696e+00
+```
+For class_c buildings, the effect of having a green_rating on Rent is +$4.696/sqft, holding all else fixed.
+
+Effect of green rating for class_b buildings:
+```
+green_rating green_rating:class_b
+4.696e+00 - 2.485e+00
+```
+For class_b buildings, the effect of having a green_rating on Rent is +$2.211/sqft per calander year compared to class_c buildings, holding all else fixed.
+
+Effect of green rating for class_a buildings:
+```
+green_rating green_rating:class_a
+4.696e+00 - 2.935e+00 
+```
+For class_a buildings, the effect of having a green_rating on Rent is +$1.761/sqft per calander year compared to class_c buildings, holding all else fixed.
+
+![image](https://user-images.githubusercontent.com/47119252/55697268-41722480-5986-11e9-90b9-ad62b634617c.png)
+![image](https://user-images.githubusercontent.com/47119252/55697296-66669780-5986-11e9-8f55-a2e517b51e9e.png)
+
+
+Overall, we found several interesting relationships. First, the best model to predict price is a linear step model. This provided us with the lowest AIC. Second, on average, buildings with green certification do charge a premium of $2.21/sqft. Third, the lowest quality buildings (Class C) charged the highest green certification premium at about $4.70/sqft while the highest quality buildings (Class A) charged the lowest premium at about $1.76/sqft more. A possible explanation for this result would be that high quality buildings have other features that boost prices, so green certification is "washed out" among those features. On the contrary, lower quality buildings have fewer features which allow green certification to stand out and command a larger price premium.
 
 Problem 2
 =========
