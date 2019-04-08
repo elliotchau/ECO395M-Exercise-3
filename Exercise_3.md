@@ -9,6 +9,8 @@ Problem 1
 Model selection and regularization: green buildlings
 ----------------------------------------------------
 
+**Building the best predictive model**
+
 Before buildling the best predictive model, we noticed that there were missing observations in the data set. We elected to analyze possible corrections before proceeding with the model buildling process. Below is a table of basic summary statistics of the greenbuildlings data.
   
 
@@ -90,7 +92,7 @@ Proceeding with development of the best model, we try various methods.
 
 The following is the LASSO model.
 
-
+**ADD PICTURE**
 
 Analysis of Variance Table
   
@@ -141,15 +143,76 @@ Analysis of Variance Table
  >   cluster:cd_total_07 + amenities:Gas_Costs + amenities:Precipitation + 
  >   stories:cd_total_07
     
- >  Res.Df    RSS Df Sum of Sq       F    Pr(>F)    
- > 1   7873 695267                                   
- > 2   7843 637567 30     57700 24.0411 < 2.2e-16 ***
- > 3   7823 625851 20     11716  7.3226 < 2.2e-16 ***
+ Res.Df   | RSS |Df| Sum of Sq |      F  |  Pr(>F)  
+ --------- |--|---|---------------|--|--------
+ 1|   7873 | 695267 |    |         |         |            
+ 2|   7843 | 637567 | 30 |   57700 | 24.0411 | < 2.2e-16 ***
+ 3|   7823 | 625851 | 20 |   11716 |  7.3226 | < 2.2e-16 ***
 
 Compared to the full model, all models findings are statistically significant down to the 1% level. We also find that the gb_lm_step model results not only in the lowest AIC, but also the lowest RSS and therefore is the optimal model.
 
 Best performing model: gb_lm_step
 AIC = 34662.54
+
+We also tried a KNN model to determine if there was possible improvement.
+![image](https://user-images.githubusercontent.com/47119252/55696400-695f8900-5982-11e9-9129-53ad4257d1c4.png)
+
+
+**Using the model to quantify the average change in rental income per square foot associated with green certification, holding other features of the building constant**
+
+```
+green_rating 
+2.010052e+00
+```
+
+On average, the effect of green certification on Rent for class_c buildings, holding all other features fixed, is +$2.01/sqft per calander year.
+
+**Assess whether the green certification effect is different for different buildings, or instead whether it seems to be roughly similar across all or most buildings**
+
+
+Re-run optimal model and include an interaction for class_a and class_b buildings with green rating.
+> gbGR_lm_model = lm(formula = Rent ~ class_a:green_rating + class_b:green_rating + cluster_rent + age + Electricity_Costs + 
+>    size + stories + class_a + amenities + CS_PropertyID + class_b + 
+>    hd_total07 + net + Gas_Costs + cluster + empl_gr + Precipitation + 
+>    green_rating + cd_total_07 + LEED + leasing_rate + cluster_rent:size + 
+>    size:cluster + cluster_rent:cluster + size:Precipitation + 
+>    cluster_rent:stories + size:leasing_rate + net:cd_total_07 + 
+>    stories:class_a + age:class_b + age:class_a + hd_total07:Precipitation + 
+>    cluster_rent:LEED + stories:amenities + amenities:class_b + 
+>    cluster_rent:leasing_rate + class_b:Precipitation + size:cd_total_07 + 
+>    Electricity_Costs:class_b + Gas_Costs:Precipitation + cluster_rent:amenities + 
+>    amenities:green_rating + CS_PropertyID:hd_total07 + Electricity_Costs:CS_PropertyID + 
+>    CS_PropertyID:class_b + cluster_rent:age + age:Electricity_Costs + 
+>    cluster:leasing_rate + hd_total07:cd_total_07 + Electricity_Costs:cluster + 
+>    hd_total07:cluster + cluster_rent:cd_total_07 + class_a:Precipitation + 
+>    size:CS_PropertyID + amenities:CS_PropertyID + Electricity_Costs:class_a + 
+>    CS_PropertyID:empl_gr + amenities:Gas_Costs + amenities:Precipitation + 
+>    age:cd_total_07 + class_b:empl_gr + cluster_rent:net + stories:cluster + 
+>    class_a:CS_PropertyID + age:CS_PropertyID + LEED:leasing_rate + 
+>    class_a:Gas_Costs + class_b:Gas_Costs + CS_PropertyID:Gas_Costs + 
+>    Electricity_Costs:amenities + stories:cd_total_07 + class_a:empl_gr + 
+>    Gas_Costs:cluster + cluster:cd_total_07, data = gb_impute)
+
+Effect of green rating for class_c buildings:
+```
+green_rating 
+4.696e+00
+```
+For class_c buildings, the effect of having a green_rating on Rent is +$4.696/sqft, holding all else fixed.
+
+Effect of green rating for class_b buildlings:
+```
+green_rating green_rating:class_b
+4.696e+00 - 2.485e+00
+```
+For class_b buildings, the effect of having a green_rating on Rent is +$2.211/sqft per calander year compared to class_c buildings, holding all else fixed.
+
+Effect of green rating for class_a buildings:
+```
+green_rating green_rating:class_a
+4.696e+00 - 2.935e+00 
+```
+For class_a buildings, the effect of having a green_rating on Rent is +$1.761/sqft per calander year compared to class_c buildings, holding all else fixed.
 
 Problem 2
 =========
