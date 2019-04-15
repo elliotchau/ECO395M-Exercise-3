@@ -178,7 +178,7 @@ sum(gbb.1se!=0)
 
 # Comparing AICc and CV error
 plot(gb_cvl, bty="n")
-lines(log(gb_lasso$lambda), (AICc(gb_lasso)/n), col="green", lwd=2)
+lines(log(gb_lasso$lambda), AICc(gb_lasso)/n, col="green", lwd=2)
 legend("top", fill=c("blue","green"),
        legend=c("CV","AICc"), bty="n")
 #######
